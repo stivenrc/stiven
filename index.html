@@ -1,0 +1,54 @@
+  <meta charset="utf-8" />
+  <link rel='stylesheet' href='./styles.css'/>
+
+  <div></div>
+
+  <script>
+    const createCalendar = ({locale,year }) => {
+
+    const weekDays = [...Array(7).keys()] // array de 7 elementos
+    const intlWeekDay = new Intl.DateTimeFormat(locale, {weekday: 'long'})
+
+    const weekDaysNames = weekDays.map(weekDaysIndex => {
+      const date = new Date(2021, 10, weekDaysIndex + 1) // punto de partida organizacion fechas
+      console.log(date);
+      const weekDayName = intlWeekDay.format(date)
+      return weekDayName
+    })
+
+    const renderdWeekDays = weekDaysNames.map(weekDayName => `<li class='day-name'>${weekDayName}</li>`).join('')
+  
+    const months = [... Array(12).keys()]
+    const intl = new Intl.DateTimeFormat(locale, { month:  'long' })
+    
+    const calendar = months.map(monthKey => {
+      const monthName = intl.format(new Date(year, monthKey)) // generador de meses 
+    
+      const nextMonthIndex = monthKey + 1
+      const daysOfMonth = new Date(year,nextMonthIndex, 0).getDate()
+
+      const startsOn = new Date(year ,monthKey, 1).getDay()
+
+      return {
+        monthName,
+        daysOfMonth,
+        startsOn
+      }
+    })
+    console.log(calendar)
+    const html = calendar.map(({daysOfMonth, monthName, startsOn}) => {
+      const days = [...Array(daysOfMonth).keys()]
+      const firtDayAtributes = `class='first-day' style='--first-day-start: ${startsOn}'`
+      const renderdDays = days.map((day, index) => `<li ${index === 0 ? firtDayAtributes:''}>${day + 1}</li>`
+      ).join('')
+
+      const title = `<h1>${monthName} ${year}</h1>` 
+
+      return `${title}<ol>${renderdWeekDays}${renderdDays}</ol>`
+    }).join('')
+
+    document.querySelector('div').innerHTML = html
+    }
+    createCalendar({year: 2023, locale: 'es-AR'})
+  </script>
+    
